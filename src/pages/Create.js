@@ -1,7 +1,19 @@
 import React from 'react';
-import { Typography, Button, Container, makeStyles, TextField } from '@material-ui/core';
+import {
+	Typography,
+	Button,
+	Container,
+	makeStyles,
+	TextField,
+	Radio,
+	RadioGroup,
+	FormControlLabel,
+	FormLabel,
+	FormControl,
+} from '@material-ui/core';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import { useState } from 'react';
+import { useHistory } from 'react-router';
 
 const useStyles = makeStyles({
 	field: {
@@ -18,11 +30,14 @@ export default function Create() {
 
 	const [titleError, setTitleError] = useState(false);
 	const [detailsError, setDetailsError] = useState(false);
+
+	const [category, setCategory] = useState('todos');
+	const history = useHistory();
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		setTitleError(false);
 		setDetailsError(false);
-		
+
 		if (title === '') {
 			setTitleError(true);
 		}
@@ -31,7 +46,11 @@ export default function Create() {
 		}
 
 		if (title && details) {
-			console.log(title, details);
+			fetch('http://localhost:8000/notes', {
+				method: 'POST',
+				headers: { 'Content-type': 'application/json' },
+				body: JSON.stringify({title,details,category})
+			}).then(()=> history.push('/'))
 		}
 	};
 
@@ -63,6 +82,17 @@ export default function Create() {
 					required
 					error={detailsError}
 				/>
+				<FormControl className={classes.field}>
+					<FormLabel>Note category</FormLabel>
+
+					<RadioGroup value={category} onChange={(e) => setCategory(e.target.value)}>
+						<FormControlLabel value="money" control={<Radio />} label="Money" />
+						<FormControlLabel value="todos" control={<Radio />} label="Todos" />
+						<FormControlLabel value="reminders" control={<Radio />} label="Reminders" />
+						<FormControlLabel value="works" control={<Radio />} label="Money" />
+					</RadioGroup>
+				</FormControl>
+
 				<Button type="submit" color="secondary" variant="contained" endIcon={<KeyboardArrowRightIcon />}>
 					Submit
 				</Button>
