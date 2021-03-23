@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
+import { Container, Grid, Paper } from '@material-ui/core';
 export default function Notes() {
 	const [notes, setNotes] = useState([]);
 	useEffect(() => {
@@ -12,12 +12,17 @@ export default function Notes() {
 		getData();
 	}, []);
 	return (
-    <div>
-      {notes.map(note =>(
-        <p key={note.id}>{note.title}</p>
-      ))}
-    </div>
-  );
+		<Container>
+			<Grid container>
+				{notes.map((note) => (
+					<Grid item xs={12} sm={6} md={4} key={note.id}>
+						<Paper>{note.title}</Paper>
+
+					</Grid>
+				))}
+			</Grid>
+		</Container>
+	);
 }
 
-//json-server --watch data/db.json --port 8000 
+//json-server --watch data/db.json --port 8000
